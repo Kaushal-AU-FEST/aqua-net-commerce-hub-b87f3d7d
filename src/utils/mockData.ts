@@ -1,4 +1,3 @@
-
 export type Role = 'seller' | 'logistics' | 'delivery' | 'business' | 'admin';
 
 export interface User {
@@ -7,6 +6,8 @@ export interface User {
   email: string;
   role: Role;
   avatar?: string;
+  isActive?: boolean;
+  lastLogin?: string;
 }
 
 export interface Product {
@@ -23,6 +24,7 @@ export interface Product {
   rating: number;
   createdAt: string;
   sellerId: string;
+  unitsSold?: number;
 }
 
 export interface Order {
@@ -35,6 +37,35 @@ export interface Order {
   date: string;
 }
 
+export interface Shipment {
+  id: string;
+  destination: string;
+  driver: string;
+  status: 'pending' | 'in_transit' | 'delivered';
+  departureDate: string;
+  estimatedArrival: string;
+  vehicle: string;
+  items: number;
+}
+
+export interface Delivery {
+  id: string;
+  customer: string;
+  address: string;
+  timeSlot: string;
+  items: number;
+  phone: string;
+  status: 'pending' | 'delivered' | 'failed';
+}
+
+export interface SystemLog {
+  id: string;
+  type: 'user' | 'system' | 'security' | 'order';
+  action: string;
+  timestamp: string;
+  level: 'info' | 'warning' | 'error';
+}
+
 // Mock Users
 export const mockUsers: User[] = [
   {
@@ -42,35 +73,45 @@ export const mockUsers: User[] = [
     name: 'John Seller',
     email: 'john@dolphnet.com',
     role: 'seller',
-    avatar: 'https://ui-avatars.com/api/?name=John+Seller&background=0D8ABC&color=fff'
+    avatar: 'https://ui-avatars.com/api/?name=John+Seller&background=0D8ABC&color=fff',
+    isActive: true,
+    lastLogin: '2023-04-12 09:45 AM'
   },
   {
     id: '2',
     name: 'Lisa Logistics',
     email: 'lisa@dolphnet.com',
     role: 'logistics',
-    avatar: 'https://ui-avatars.com/api/?name=Lisa+Logistics&background=0D8ABC&color=fff'
+    avatar: 'https://ui-avatars.com/api/?name=Lisa+Logistics&background=0D8ABC&color=fff',
+    isActive: true,
+    lastLogin: '2023-04-13 11:20 AM'
   },
   {
     id: '3',
     name: 'Dave Delivery',
     email: 'dave@dolphnet.com',
     role: 'delivery',
-    avatar: 'https://ui-avatars.com/api/?name=Dave+Delivery&background=0D8ABC&color=fff'
+    avatar: 'https://ui-avatars.com/api/?name=Dave+Delivery&background=0D8ABC&color=fff',
+    isActive: true,
+    lastLogin: '2023-04-13 08:30 AM'
   },
   {
     id: '4',
     name: 'Barbara Business',
     email: 'barbara@dolphnet.com',
     role: 'business',
-    avatar: 'https://ui-avatars.com/api/?name=Barbara+Business&background=0D8ABC&color=fff'
+    avatar: 'https://ui-avatars.com/api/?name=Barbara+Business&background=0D8ABC&color=fff',
+    isActive: true,
+    lastLogin: '2023-04-12 03:15 PM'
   },
   {
     id: '5',
     name: 'Admin User',
     email: 'admin@dolphnet.com',
     role: 'admin',
-    avatar: 'https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff'
+    avatar: 'https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff',
+    isActive: true,
+    lastLogin: '2023-04-13 10:05 AM'
   },
 ];
 
@@ -89,7 +130,8 @@ export const mockProducts: Product[] = [
     color: ['Blue', 'Black', 'Red'],
     rating: 4.7,
     createdAt: '2023-12-01',
-    sellerId: '1'
+    sellerId: '1',
+    unitsSold: 120
   },
   {
     id: 'p2',
@@ -273,3 +315,261 @@ export const mockStats = {
   pendingOrders: 2,
   revenueThisMonth: 1089.90
 };
+
+// Mock data for Logistics Dashboard
+export const mockShipments: Shipment[] = [
+  {
+    id: 'S1001',
+    destination: 'New York, NY',
+    driver: 'Michael Johnson',
+    status: 'in_transit',
+    departureDate: '2023-04-12',
+    estimatedArrival: '2023-04-14',
+    vehicle: 'Van-XL-102',
+    items: 24
+  },
+  {
+    id: 'S1002',
+    destination: 'Boston, MA',
+    driver: 'Sarah Williams',
+    status: 'pending',
+    departureDate: '2023-04-14',
+    estimatedArrival: '2023-04-16',
+    vehicle: 'Truck-L-205',
+    items: 36
+  },
+  {
+    id: 'S1003',
+    destination: 'Chicago, IL',
+    driver: 'Robert Davis',
+    status: 'delivered',
+    departureDate: '2023-04-10',
+    estimatedArrival: '2023-04-13',
+    vehicle: 'Van-M-087',
+    items: 18
+  },
+  {
+    id: 'S1004',
+    destination: 'Los Angeles, CA',
+    driver: 'Emily Thompson',
+    status: 'pending',
+    departureDate: '2023-04-15',
+    estimatedArrival: '2023-04-20',
+    vehicle: 'Truck-XL-314',
+    items: 52
+  },
+  {
+    id: 'S1005',
+    destination: 'Miami, FL',
+    driver: 'Daniel Martinez',
+    status: 'in_transit',
+    departureDate: '2023-04-11',
+    estimatedArrival: '2023-04-15',
+    vehicle: 'Van-L-159',
+    items: 31
+  }
+];
+
+// Mock data for Delivery Partner Dashboard
+export const mockDeliveries: Delivery[] = [
+  {
+    id: 'D1001',
+    customer: 'Jane Cooper',
+    address: '123 Main St, Apt 4B, New York, NY',
+    timeSlot: '10:00 AM - 12:00 PM',
+    items: 2,
+    phone: '(555) 123-4567',
+    status: 'pending'
+  },
+  {
+    id: 'D1002',
+    customer: 'Cody Fisher',
+    address: '456 Elm Ave, Boston, MA',
+    timeSlot: '1:00 PM - 3:00 PM',
+    items: 1,
+    phone: '(555) 987-6543',
+    status: 'pending'
+  },
+  {
+    id: 'D1003',
+    customer: 'Esther Howard',
+    address: '789 Oak Rd, Chicago, IL',
+    timeSlot: '3:00 PM - 5:00 PM',
+    items: 3,
+    phone: '(555) 456-7890',
+    status: 'delivered'
+  },
+  {
+    id: 'D1004',
+    customer: 'Cameron Williamson',
+    address: '321 Pine St, Miami, FL',
+    timeSlot: '9:00 AM - 11:00 AM',
+    items: 2,
+    phone: '(555) 234-5678',
+    status: 'failed'
+  },
+  {
+    id: 'D1005',
+    customer: 'Brooklyn Simmons',
+    address: '654 Cedar Ln, Seattle, WA',
+    timeSlot: '4:00 PM - 6:00 PM',
+    items: 4,
+    phone: '(555) 876-5432',
+    status: 'pending'
+  }
+];
+
+// Mock data for Business Dashboard
+export const mockBusinessStats = {
+  totalRevenue: 45280.90,
+  revenueIncrease: 12.5,
+  averageOrderValue: 120.75,
+  aovIncrease: 3.2,
+  conversionRate: 4.8,
+  conversionIncrease: 0.5,
+  totalOrders: 375,
+  ordersIncrease: 8.3
+};
+
+export const mockTopProducts: Product[] = [
+  {
+    id: 'p1',
+    name: 'Wave Runner Athletic Shoe',
+    category: 'Running',
+    price: 129.99,
+    stock: 45,
+    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff',
+    description: 'Lightweight running shoes with wave technology.',
+    brand: 'WaveTech',
+    size: ['7', '8', '9', '10', '11', '12'],
+    color: ['Blue', 'Black', 'Red'],
+    rating: 4.7,
+    createdAt: '2023-12-01',
+    sellerId: '1',
+    unitsSold: 120
+  },
+  {
+    id: 'p3',
+    name: 'Pro Tide Basketball Shoes',
+    category: 'Basketball',
+    price: 159.99,
+    stock: 12,
+    image: 'https://images.unsplash.com/photo-1607522370275-f14206abe5d3',
+    description: 'High-performance basketball shoes.',
+    brand: 'TideMax',
+    size: ['8', '9', '10', '11', '12', '13'],
+    color: ['Black/Red', 'White/Blue', 'Gray/Orange'],
+    rating: 4.9,
+    createdAt: '2024-01-05',
+    sellerId: '1',
+    unitsSold: 87
+  },
+  {
+    id: 'p2',
+    name: 'Aqua Comfort Casual Sneakers',
+    category: 'Casual',
+    price: 89.99,
+    stock: 28,
+    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772',
+    description: 'Stylish sneakers with water-resistant coating.',
+    brand: 'AquaStep',
+    size: ['6', '7', '8', '9', '10'],
+    color: ['White', 'Gray', 'Navy'],
+    rating: 4.3,
+    createdAt: '2023-11-15',
+    sellerId: '1',
+    unitsSold: 65
+  },
+  {
+    id: 'p4',
+    name: 'Dolphin Flex Hiking Boots',
+    category: 'Hiking',
+    price: 149.99,
+    stock: 8,
+    image: 'https://images.unsplash.com/photo-1520639888713-7851133b1ed0',
+    description: 'Waterproof hiking boots with superior grip.',
+    brand: 'TrekPath',
+    size: ['7', '8', '9', '10', '11', '12'],
+    color: ['Brown', 'Green', 'Black'],
+    rating: 4.8,
+    createdAt: '2023-10-20',
+    sellerId: '1',
+    unitsSold: 52
+  },
+  {
+    id: 'p8',
+    name: 'Aqua Formal Leather Oxfords',
+    category: 'Formal',
+    price: 139.99,
+    stock: 15,
+    image: 'https://images.unsplash.com/photo-1613987876445-18a6d069d78d',
+    description: 'Premium leather oxford shoes.',
+    brand: 'AquaFormal',
+    size: ['8', '9', '10', '11', '12'],
+    color: ['Black', 'Brown', 'Tan'],
+    rating: 4.7,
+    createdAt: '2023-09-10',
+    sellerId: '1',
+    unitsSold: 43
+  }
+];
+
+// Mock data for Admin Panel
+export const mockSystemLogs: SystemLog[] = [
+  {
+    id: 'log-001',
+    type: 'security',
+    action: 'Unauthorized login attempt',
+    timestamp: '2023-04-13T08:12:30Z',
+    level: 'warning'
+  },
+  {
+    id: 'log-002',
+    type: 'system',
+    action: 'Database backup completed',
+    timestamp: '2023-04-13T07:00:00Z',
+    level: 'info'
+  },
+  {
+    id: 'log-003',
+    type: 'user',
+    action: 'User Barbara Business updated profile',
+    timestamp: '2023-04-12T14:25:10Z',
+    level: 'info'
+  },
+  {
+    id: 'log-004',
+    type: 'order',
+    action: 'Order O1003 payment failed',
+    timestamp: '2023-04-12T11:32:45Z',
+    level: 'error'
+  },
+  {
+    id: 'log-005',
+    type: 'system',
+    action: 'API rate limit exceeded',
+    timestamp: '2023-04-12T10:18:22Z',
+    level: 'warning'
+  },
+  {
+    id: 'log-006',
+    type: 'security',
+    action: 'Admin user logged in',
+    timestamp: '2023-04-13T10:05:00Z',
+    level: 'info'
+  },
+  {
+    id: 'log-007',
+    type: 'system',
+    action: 'Server CPU usage exceeded 90%',
+    timestamp: '2023-04-11T15:45:12Z',
+    level: 'error'
+  },
+  {
+    id: 'log-008',
+    type: 'user',
+    action: 'New user John Seller registered',
+    timestamp: '2023-04-10T09:20:30Z',
+    level: 'info'
+  }
+];
