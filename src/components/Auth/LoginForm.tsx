@@ -30,43 +30,42 @@ const LoginForm = () => {
     
     // Simulate API call with timeout
     setTimeout(() => {
-      const user = mockUsers.find(u => u.email === email && u.role === role);
+      // Get matching user from mockUsers if available, otherwise create a mock user
+      const user = mockUsers.find(u => u.email === email && u.role === role) || {
+        id: "temp-user-id",
+        name: email.split('@')[0] || "User",
+        email: email,
+        role: role,
+      };
       
-      if (user && password === "password") {
-        toast({
-          title: "Login successful!",
-          description: `Welcome back, ${user.name}!`,
-        });
-        
-        // Store user in sessionStorage (in a real app, you'd store a token)
-        sessionStorage.setItem('currentUser', JSON.stringify(user));
-        
-        // Redirect based on role
-        switch(role) {
-          case 'seller':
-            navigate('/seller-dashboard');
-            break;
-          case 'logistics':
-            navigate('/logistics-dashboard');
-            break;
-          case 'delivery':
-            navigate('/delivery-dashboard');
-            break;
-          case 'business':
-            navigate('/business-dashboard');
-            break;
-          case 'admin':
-            navigate('/admin-panel');
-            break;
-          default:
-            navigate('/seller-dashboard');
-        }
-      } else {
-        toast({
-          title: "Login failed",
-          description: "Invalid email/password or role combination",
-          variant: "destructive",
-        });
+      // Always show success message
+      toast({
+        title: "Login successful!",
+        description: `Welcome, ${user.name}!`,
+      });
+      
+      // Store user in sessionStorage
+      sessionStorage.setItem('currentUser', JSON.stringify(user));
+      
+      // Redirect based on role
+      switch(role) {
+        case 'seller':
+          navigate('/seller-dashboard');
+          break;
+        case 'logistics':
+          navigate('/logistics-dashboard');
+          break;
+        case 'delivery':
+          navigate('/delivery-dashboard');
+          break;
+        case 'business':
+          navigate('/business-dashboard');
+          break;
+        case 'admin':
+          navigate('/admin-panel');
+          break;
+        default:
+          navigate('/seller-dashboard');
       }
       
       setLoading(false);
@@ -132,8 +131,8 @@ const LoginForm = () => {
       </Button>
 
       <div className="text-xs text-gray-500 text-center mt-4">
-        <p>Demo accounts available:</p>
-        <p>Use any email from the list with password "password"</p>
+        <p>Enter any email and password to login</p>
+        <p>You will be redirected based on the selected role</p>
         <div className="text-left mt-2 border rounded-md p-2">
           <ul className="space-y-1">
             {mockUsers.map((user) => (
