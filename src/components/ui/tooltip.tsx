@@ -4,13 +4,10 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "@/lib/utils"
 
-// We need to properly define the TooltipProvider as a React component
-const TooltipProvider = React.forwardRef<
-  React.ElementRef<typeof TooltipPrimitive.Provider>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Provider>
->(({ ...props }, ref) => {
-  return <TooltipPrimitive.Provider {...props} ref={ref} />
-})
+// The TooltipProvider doesn't need ref forwarding, since it doesn't render a DOM element
+const TooltipProvider = ({ ...props }) => {
+  return <TooltipPrimitive.Provider {...props} />
+}
 TooltipProvider.displayName = "TooltipProvider"
 
 const Tooltip = TooltipPrimitive.Root
