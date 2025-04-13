@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Layout/Navbar";
@@ -6,10 +5,8 @@ import Sidebar from "@/components/Layout/Sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { 
-  Badge,
-  Switch 
-} from "@/components/ui";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Users, 
@@ -17,7 +14,7 @@ import {
   Database,
   ActivitySquare,
 } from "lucide-react";
-import { mockUsers, mockSystemLogs } from "@/utils/mockData";
+import { mockUsers, mockSystemLogs, SystemLog } from "@/utils/mockData";
 
 const AdminPanel = () => {
   const [user, setUser] = useState<any>(null);
@@ -76,7 +73,7 @@ const AdminPanel = () => {
     });
     
     // Add a new system log
-    const newLog = {
+    const newLog: SystemLog = {
       id: `log-${Date.now()}`,
       type: "user",
       action: `User ${targetUser?.name} ${newStatus}`,

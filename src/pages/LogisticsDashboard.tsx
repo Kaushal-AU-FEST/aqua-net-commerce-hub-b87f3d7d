@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { MapPin, Package, Truck, AlertCircle } from "lucide-react";
-import { mockShipments } from "@/utils/mockData";
+import { mockShipments, Shipment } from "@/utils/mockData";
 
 const LogisticsDashboard = () => {
   const [user, setUser] = useState<any>(null);
@@ -37,7 +37,7 @@ const LogisticsDashboard = () => {
     });
   };
   
-  const handleUpdateStatus = (id: string, newStatus: string) => {
+  const handleUpdateStatus = (id: string, newStatus: "pending" | "in_transit" | "delivered") => {
     setShipments(prev => 
       prev.map(shipment => 
         shipment.id === id 
