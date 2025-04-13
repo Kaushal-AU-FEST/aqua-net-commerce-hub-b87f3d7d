@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 
 interface SalesChartProps {
-  data: Array<{
+  data?: Array<{
     name: string;
     sales: number;
   }>;
@@ -15,6 +15,8 @@ interface SalesChartProps {
 }
 
 export const SalesChart = ({ data }: SalesChartProps) => {
+  if (!data) return null;
+  
   return (
     <Card className="glass-card">
       <CardHeader>
@@ -70,6 +72,8 @@ export const SalesChart = ({ data }: SalesChartProps) => {
 };
 
 export const CategoryChart = ({ categoryData }: SalesChartProps) => {
+  if (!categoryData) return null;
+  
   const COLORS = ['#33c3f0', '#0fa0ce', '#1eaedb', '#6bcae8', '#a1dff0'];
   
   return (
@@ -92,7 +96,7 @@ export const CategoryChart = ({ categoryData }: SalesChartProps) => {
                 dataKey="value"
                 label
               >
-                {categoryData?.map((entry, index) => (
+                {categoryData.map((entry, index) => (
                   <Cell 
                     key={`cell-${index}`} 
                     fill={COLORS[index % COLORS.length]} 
